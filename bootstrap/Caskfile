@@ -5,3 +5,4 @@ install caskroom/cask/brew-cask
 tap caskroom/versions
 
 cask install authoxy
+cask install xquartz
