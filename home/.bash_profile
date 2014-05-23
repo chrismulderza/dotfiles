@@ -26,6 +26,9 @@ export NGINX_PATH='/opt/nginx'
 # Don't check mail when opening terminal.
 unset MAILCHECK
 
+# OSX Specific, replace GNU tools
+#export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+#export MANPATH=$(brew --prefix coreutils)/libexec/gnuman:$MANPATH
 
 # Change this to your console based IRC client of choice.
 
@@ -41,6 +44,7 @@ export TODO="t"
 
 ############## EDCON SOA ENVIRONMENT ####################
 
+#/TODO: Split these out to a modularised section
 #
 # Oracle SOA
 #

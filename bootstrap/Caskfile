@@ -8,3 +8,5 @@ tap caskroom/fonts
 cask install authoxy
 cask install xquartz
 cask install font-inconsolata-dz
+
+cask install mactex

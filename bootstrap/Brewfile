@@ -36,7 +36,7 @@ install homebrew/php/php55 --with-gmp
 #install homebrew/dupes/screen
 
 # Install other useful binaries
-install ack
+#install ack
 #install exiv2
 install foremost
 install git
@@ -57,6 +57,16 @@ install xpdf
 install zopfli
 
 install homebrew/versions/lua52
+
+install midnight-commander
+install mp3blaster
+install watch
+install socat
+install sox
+install mysql
+install tmux 
+install tmux-cssh
+#install macvim --custom-icons --override-system-vim --with-lua --with-luajit
 
 # Remove outdated versions from the cellar
 cleanup
