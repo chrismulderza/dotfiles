@@ -1,5 +1,8 @@
 1. Get Homebrew
 2. Get Git
+2. Clone dotfiles repo
+3. git submodule init
+4. git submodule update
 3. Install Brew Files -> Should also include Casks
 4. Setup Casks
 	-> brew install caskroom/cask/brew-cask
