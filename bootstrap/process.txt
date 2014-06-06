@@ -4,8 +4,5 @@
 3. git submodule init
 4. git submodule update
 3. Install Brew Files -> Should also include Casks
-4. Setup Casks
-	-> brew install caskroom/cask/brew-cask
-	-> brew tap caskroom/fonts   
 5. Install Casks
 6. Checkout Repo and Link
