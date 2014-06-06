@@ -42,3 +42,4 @@ cask install virtualbox
 cask install vlc
 cask install wireshark
 cask install osxfuse
+cask install ukelele
