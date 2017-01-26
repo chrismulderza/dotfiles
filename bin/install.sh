@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 CURRENT="`pwd`"
-BASE_DIR=${HOME}/code/dotfiles
+BASE_DIR=${HOME}/code
+REPO_BASE=${BASE_DIR}/test
 GIT_USER="chrismulderza"
+PLAYBOOK_REPO="https://github.com/${GIT_USER}/mac-dev-playbook.git"
 DOTFILES_REPO="git@github.com:${GIT_USER}/dotfiles.git"
 INSTALL_ZSH=true
 CONFIG_ONLY=false
 ANSIBLE_BINARY="/usr/local/bin/ansible"
 ANSIBLE_MINIMUM_VERSION="1.6"
+GIT_BINARY="/usr/local/bin/git"
 
 #set -e
 
@@ -194,6 +197,32 @@ checkAnsible() {
   fi
 }
 
+checkGit() {
+
+  info "Checking Git..."
+  if [ ! -f "${GIT_BINARY}" ]; then
+    info "Homebrew Git not installed"
+    INSTALL_GIT=true
+  else
+    info "Homebrew Git installed"
+    INSTALL_GIT=false
+  fi
+
+  if [ "${INSTALL_GIT}" == true ]; then
+    info "Installing Git from Homebrew"
+    brew install git
+    if [[ $? -ne 0 ]]; then
+        fail "Git installation failed"
+    fi
+    success "Git Installation complete"
+  fi
+
+}
+
+cloneRepo() {
+info "Cloning ${1} into $(pwd)"
+git clone ${1}
+}
 
 # Parse options
 if [ $# -gt 0 ] ; then
@@ -225,8 +254,16 @@ checkHomebrew
 # Check/Install Ansible
 checkAnsible
 
-# Clone MacDev Playbook
+# Check/Install Git (We prefer Homebrew version over macOS bundled version)
+checkGit
 
+# Clone MacDev Playbook
+info "Preparing to clone repos"
+ensure_dir ${REPO_BASE}
+info "Changing directory to: ${REPO_BASE}"
+cd ${REPO_BASE}
+info "Current working directory: $(pwd)"
+cloneRepo ${PLAYBOOK_REPO}
 
 ## TODO
 ## Print preample

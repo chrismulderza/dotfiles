@@ -1,2 +1,0 @@
-cd ${HOME}/.homesick/repos/dotfiles/home
-ln -s ../../bash-it .bash_it
