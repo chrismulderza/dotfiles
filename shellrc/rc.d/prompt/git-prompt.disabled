@@ -1,0 +1,13 @@
+
+# First try to source the Homebrew git version budled git-prompt.sh
+#if which brew &> /dev/null; then
+#  GIT_PFX=$(brew --prefix git)
+#  source ${GIT_PFX}/etc/bash_completion.d/git-prompt.sh
+#else 
+#  source ${RC_DIR_PATH}/rc.d/git-prompt.default
+#fi
+
+if [ -f "$(brew --prefix bash-git-prompt)/share/gitprompt.sh" ]; then
+  GIT_PROMPT_THEME=Default
+  source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
+fi
