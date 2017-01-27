@@ -1,0 +1,66 @@
+# $HOME/.bashrc
+# When you start an interactive shell (log in, open terminal or iTerm
+# in OS X, or create a new tab in iTerm) the following files are read and
+# run, in this order:
+#     /etc/profile
+#     /etc/bashrc
+#     ~/.bash_profile
+#     ~/.bashrc (only because this file is run (sourced) in .bash_profile)
+#
+# When an interactive shell, that is not a login shell, is started
+# (when you run "bash" from inside a shell, or when you start a shell in
+# xwindows [xterm/gnome-terminal/etc] ) the following files are read and
+# executed, in this order:
+#     /etc/bashrc
+#     ~/.bashrc
+#
+#
+# this file is sourced by all *interactive* bash shells on startup,
+# including some apparently interactive shells such as scp and rcp
+# that can't tolerate any output. so make sure this doesn't display
+# anything or bad things will happen !
+
+# test for an interactive shell. there is no need to set anything
+# past this point for scp and rcp, and it's important to refrain from
+# outputting anything in those cases.
+
+if [[ $- != *i* ]] ; then
+  # shell is non-interactive. be done now!
+  return
+fi
+
+_debug "FILE: .bashrc"
+
+# Re-use this variable
+RC_DIR_PATH=$HOME/.dotfiles/shellrc
+export RC_DIR_PATH
+_debug "PATH: ${RC_DIR_PATH}"
+
+_debug "LOADING: rc.d"
+RC_DIR=rc.d
+if [ -d ${RC_DIR_PATH}/${RC_DIR} ]; then
+  LOADPATH=
+  #for RC_TYPE in options history completion env alternatives colors functions aliases prompt extensions
+  for RC_TYPE in options history completion env alternatives colors functions aliases prompt extensions
+  do 
+    LOADPATH=${RC_DIR_PATH}/${RC_DIR}/${RC_TYPE}
+    _debug "PROCESSING: ${LOADPATH}"
+    if test "$(/bin/ls -A "${LOADPATH}")"; then
+      for file in ${LOADPATH}/*.bash; do
+        _debug "LOADING: ${file}"
+        source $file
+    done
+    fi
+    # load OS specific files
+    LOADPATH=${RC_DIR_PATH}/${RC_DIR}/${RC_TYPE}/$(uname -s)
+    if [ -d ${LOADPATH} ]; then
+      if test "$(/bin/ls -A "${LOADPATH}")"; then
+        _debug "PROCESSING: ${LOADPATH}"
+        for file in ${LOADPATH}/*.bash; do
+          _debug "LOADING: ${file}"
+          source $file
+      done
+      fi
+    fi
+  done
+fi

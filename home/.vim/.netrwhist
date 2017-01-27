@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/Users/cmulder/Projects/Edcon/src/middleware/metadata/apps/edconMetadata/jcaConfig/BIJCAConfig/VwBibFactTranDataSkuStoreDayJCAImpl'
-let g:netrw_dirhist_2='/Users/cmulder/.homesick/repos/dotfiles/home'
-let g:netrw_dirhist_3='/Users/cmulder/Projects/Edcon/src/middleware/jcaConfig/BIJCAConfig/BIDimensionProductViewJCAImpl/xsd'

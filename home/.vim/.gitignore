@@ -1,4 +1,0 @@
-backups
-bundle/*
-!bundle/Vundle.vim
-sessions/*

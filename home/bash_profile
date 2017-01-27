@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+#When you start an interactive shell (log in, open terminal or iTerm
+# in OS X, or create a new tab in iTerm) the following files are read and
+# run, in this order:
+#     /etc/profile
+#     /etc/bashrc
+#     ~/.bash_profile
+#     ~/.bashrc (only because this file is run (sourced) in .bash_profile)
+#
+# When an interactive shell, that is not a login shell, is started
+# (when you run "bash" from inside a shell, or when you start a shell in
+# xwindows [xterm/gnome-terminal/etc] ) the following files are read and
+# executed, in this order:
+# #     /etc/bashrc
+#     ~/.bashrc
+#
+
+#DEBUG=true
+
+# Internal functions
+_debug() {
+  if [ ! -z ${DEBUG+x} ];
+  then
+    echo -e "=> [DEBUG] $@"
+  fi
+}
+
+_debug "FILE: .bash_profile"
+
+
+RC_DIR_PATH=$HOME/.dotfiles/shellrc
+
+_debug "PATH: ${RC_DIR_PATH}"
+
+# load all files from shellrc/login.d directory
+_debug "LOADING: login.d"
+
+RC_DIR=login.d
+
+if [ -d ${RC_DIR_PATH}/${RC_DIR} ]; then
+  _debug "DIR EXISTS: login.d"
+  LOADPATH=${RC_DIR_PATH}/${RC_DIR}
+  if test "$(/bin/ls -A "${LOADPATH}")"; then
+    for file in ${LOADPATH}/*.sh; do
+      _debug "LOADING: ${file}"
+      source $file
+    done
+  fi
+  # load OS specific files
+  LOADPATH=${RC_DIR_PATH}/${RC_DIR}/$(uname -s)
+  if [ -d ${LOADPATH} ]; then
+    if test "$(/bin/ls -A "${LOADPATH}")"; then
+      _debug "PROCESSING: ${LOADPATH}"
+      for file in ${LOADPATH}/*.sh; do
+        _debug "LOADING: ${file}"
+        source $file
+      done
+    fi
+  fi
+fi
+
+if [ -s ${HOME}/.bashrc ]; then
+  _debug "SOURCE: .bashrc"
+  source ${HOME}/.bashrc
+fi
