@@ -11,13 +11,4 @@ if [ -d /usr/local/bin ]; then
   MANPATH=/usr/local/share/man:$MANPATH
 fi
 
-if [ -d /Users/cmulder/tools/couchbase/4.1/couchbase-core/bin ]; then
-    PATH=$PATH:/Users/cmulder/tools/couchbase/4.1/couchbase-core/bin
-fi
-
-
-if [ -d  /opt/oracle/client/11.2 ]; then
-    PATH=$PATH:/opt/oracle/client/11.2
-fi
-
 export PATH MANPATH
