@@ -29,14 +29,14 @@ _debug() {
 _debug "FILE: .bash_profile"
 
 
-RC_DIR_PATH=$HOME/.dotfiles/shellrc
+RC_DIR_PATH=$HOME/bashrc.d
 
 _debug "PATH: ${RC_DIR_PATH}"
 
-# load all files from shellrc/login.d directory
-_debug "LOADING: login.d"
+# load all files from login directory
+_debug "LOADING: login"
 
-RC_DIR=login.d
+RC_DIR=login
 
 if [ -d ${RC_DIR_PATH}/${RC_DIR} ]; then
   _debug "DIR EXISTS: login.d"

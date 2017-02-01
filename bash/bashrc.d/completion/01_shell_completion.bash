@@ -11,11 +11,6 @@ fi
 
 # Source Homebrew specific completions
 if which brew &> /dev/null; then
-  if [ -f $(brew --prefix)/share/bash-completion/bash_completion ]; then
-    . $(brew --prefix)/share/bash-completion/bash_completion
-  else
-    source $(brew --prefix)/Library/Contributions/brew_bash_completion.sh
-  fi
   BREW_COMP_DIR=$(brew --prefix)/etc/bash_completion.d
   if [ -d ${BREW_COMP_DIR} ]; then
     if test "$(/bin/ls -A "${BREW_COMP_DIR}")"; then 

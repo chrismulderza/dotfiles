@@ -29,19 +29,28 @@ if [[ $- != *i* ]] ; then
   return
 fi
 
+#DEBUG=true
+
+# Internal functions
+_debug() {
+  if [ ! -z ${DEBUG+x} ];
+  then
+    echo -e "=> [DEBUG] $@"
+  fi
+}
+
 _debug "FILE: .bashrc"
 
 # Re-use this variable
-RC_DIR_PATH=$HOME/.dotfiles/shellrc
+RC_DIR_PATH=$HOME
 export RC_DIR_PATH
 _debug "PATH: ${RC_DIR_PATH}"
 
-_debug "LOADING: rc.d"
-RC_DIR=rc.d
+_debug "LOADING: bashrc.d"
+RC_DIR=bashrc.d
 if [ -d ${RC_DIR_PATH}/${RC_DIR} ]; then
   LOADPATH=
-  #for RC_TYPE in options history completion env alternatives colors functions aliases prompt extensions
-  for RC_TYPE in options history completion env alternatives colors functions aliases prompt extensions
+  for RC_TYPE in options history completion env alternatives functions aliases extensions colors prompt
   do 
     LOADPATH=${RC_DIR_PATH}/${RC_DIR}/${RC_TYPE}
     _debug "PROCESSING: ${LOADPATH}"
