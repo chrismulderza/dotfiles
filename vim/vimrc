@@ -10,7 +10,14 @@ set hidden
 set t_Co=256
 
 " Load pathogen.vim
-execute pathogen#infect()
+" execute pathogen#infect()
+if v:version >= 700
+    try
+        runtime pathogen/autoload/pathogen.vim
+        call pathogen#infect()
+    catch
+    endtry
+endif
 
 " Enable Syntax Hilighting
 syntax on
