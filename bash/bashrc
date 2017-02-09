@@ -47,7 +47,7 @@ export RC_DIR_PATH
 _debug "PATH: ${RC_DIR_PATH}"
 
 _debug "LOADING: bashrc.d"
-RC_DIR=bashrc.d
+RC_DIR=.bashrc.d
 if [ -d ${RC_DIR_PATH}/${RC_DIR} ]; then
   LOADPATH=
   for RC_TYPE in options history completion env alternatives functions aliases extensions colors prompt

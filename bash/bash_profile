@@ -29,7 +29,7 @@ _debug() {
 _debug "FILE: .bash_profile"
 
 
-RC_DIR_PATH=$HOME/bashrc.d
+RC_DIR_PATH=$HOME/.bashrc.d
 
 _debug "PATH: ${RC_DIR_PATH}"
 
