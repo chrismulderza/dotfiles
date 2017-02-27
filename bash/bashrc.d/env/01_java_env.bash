@@ -5,3 +5,7 @@ if which java &> /dev/null; then
   export JAVA_HOME
 fi
 
+if which grails &> /dev/null; then
+  GRAILS_HOME=/usr/local/opt/grails/libexec
+  export GRAILS_HOME
+fi
