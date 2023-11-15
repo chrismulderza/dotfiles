@@ -1,0 +1,7 @@
+# Bash aliases                                              -*- shell-script -*-
+# ex: ts=2 sw=2 et filetype=sh
+
+# Add some aliases that help with MacOS compatibility convenience
+alias pbpaste='xclip -selection clipboard -o'
+alias pbcopy='xclip -selection clipboard'
+alias open='xdg-open'

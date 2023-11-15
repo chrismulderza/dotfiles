@@ -1,0 +1,7 @@
+# Bash aliases                                              -*- shell-script -*-
+# ex: ts=2 sw=2 et filetype=sh
+
+# configure an alias for nvim if installed
+if [ -x "`which nvim`" ]; then 
+  alias vi=nvim
+fi
