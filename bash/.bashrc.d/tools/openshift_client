@@ -1,0 +1,15 @@
+# Bash tools configuration         -*- shell-script -*-
+
+# Openshift client configuration
+# First checks for a system-wide client in /usr/local/bin
+# else assumes that 'crc' binary has already been placed on the path
+
+if ! [[ -x "$(which oc)" ]]; then
+  if [ -x "`which crc`" ]; then 
+    PATH="$HOME/.crc/bin/oc:$PATH"
+    #eval $(crc oc-env)
+  fi
+fi
+export PATH
+
+# ex: ts=2 sw=2 et filetype=sh

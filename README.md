@@ -24,9 +24,9 @@ doesn't sit too well with me.
 
 Use the `--adopt` option of `stow` to add a new configuration to the repository.
 
-**Example: Add existing `neofetch` configuration to `.dotfiles`*
+**Example: Add existing `neofetch` configuration to `.dotfiles`**
 
-Create a new package in .dotfile:
+Create a new package in .dotfiles:
 ```
 mkdir ~/.dotfiles/neofetch 
 ```
