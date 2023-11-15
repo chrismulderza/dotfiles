@@ -1,0 +1,17 @@
+# stow ignores for dotfiles
+
+# git
+
+\.git
+\.gitignore
+
+# repository files
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+# vi backups
+~
+
+# dotfiles documentation
+docs
