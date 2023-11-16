@@ -74,4 +74,7 @@ many of them are my original work. Where I can remember who's repsonsible for
 coming up with something I'll add a credit. If you come across something that
 you think deserve a credit, get in touch. Otherwise thanks to the folks below:
 
-- 
+## Stow
+
+- Oscar Galindo, [Managing Dotfiles With Stow](https://apiumhub.com/tech-blog-barcelona/managing-dotfiles-with-stow/)
+- System Crafters, [Using GNU Stow to Manage Symbolic Links for Your Dotfiles](https://systemcrafters.net/managing-your-dotfiles/using-gnu-stow/)
