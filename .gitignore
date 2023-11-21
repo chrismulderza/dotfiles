@@ -1,0 +1,4 @@
+# dotfiles gitignore
+
+# ignore lazy.nvim package manager lock file
+**/lazy-lock.json
