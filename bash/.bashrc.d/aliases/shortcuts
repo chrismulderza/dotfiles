@@ -10,3 +10,9 @@ alias weather='curl https://wttr.in/Johannesburg+South+Africa'
 #
 alias bookmarks='~/bin/bookmarks.sh'
 alias fof='~/bin/fof.sh'
+
+# spotify_player
+
+function whatsplaying() {
+  spotify_player get key playback | jq '.item | .name +" - "+ .artists[].name'
+}

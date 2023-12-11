@@ -1,0 +1,11 @@
+# Bash tools configuration         -*- shell-script -*-
+
+# Zk configuration
+# if `zk` binary is on the path set the environment
+
+if [ -x "$(which zk)" ]; then 
+  ZK_NOTEBOOK_DIR="~/Notes"
+fi
+export ZK_NOTEBOOK_DIR
+
+# ex: ts=2 sw=2 et filetype=sh

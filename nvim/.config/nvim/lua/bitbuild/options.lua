@@ -15,11 +15,13 @@ set.relativenumber = true
 -- enables 24-bit RGB color support in TUI
 set.termguicolors = true
 -- set sensible tabstops
-set.softtabstop = 4
-set.tabstop = 4
-set.shiftwidth = 4
+set.softtabstop = 2
+set.tabstop = 2
+set.shiftwidth = 2
 -- expand tabs into spaces
 set.expandtab = true
 -- set a column marker
 set.colorcolumn = "80"
+-- spelling language
+set.spelllang = 'en_gb'
 
