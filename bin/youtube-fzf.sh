@@ -1,0 +1,629 @@
+#!/bin/sh
+
+####################
+# youtube-fzf: Browse YouTube in CLI with fzf without YouTube Data API.
+# Version: 1.6
+# Repository: https://github.com/minamotorin/youtube-fzf
+# License: GNU General Public License Version 3 (https://www.gnu.org/licenses/gpl-3.0.html)
+# Depndencies:
+#   - Bourne Shell
+#   - curl (https://curl.se/)
+#   - fzf (https://github.com/junegunn/fzf)
+#   - jq (https://stedolan.github.io/jq/)
+#   - mpv (https://mpv.io/)
+#   - youtube-dl (https://youtube-dl.org/)
+#   - youtube-comment-downloader (https://github.com/egbertbouman/youtube-comment-downloader)
+# 
+# Subscribed channels database is value of YOUTUBE_FZF_DATABASE environmental variables
+# 
+# Usage:
+#   youtube-fzf
+#      Read from subscribed channels database
+#   youtube-fzf [OPTIONS]
+# 
+# Options:
+#   --videos URL			Channel's videos
+#   --lives URL			Channel's stream archives
+#   --shorts URL			Channel's shorts
+#   --channels URL		Channel's urls
+#   --watch URL			Video's information
+#   --comments URS		Video's comments (depend on youtube-comment-downloader)
+#   -v, --fzf-videos HEADER	fzf mode for list of video's url
+#   -c, --fzf-channels HEADER	fzf mode for list of channel's url
+#   -q, --query WORDS		Search videos from words
+#   -s, --search WORDS		Search videos from words and select in fzf mode
+#   -V, --version			Show version information
+#   -h, --help			Show this help
+# 
+# fzf:
+#   ctrl-t			Toggle-preview
+#   ctrl-y			Yank (work on only macOS now)
+#   up				Page-up
+#   down				Page-down
+# 
+# fzf-videos:
+#   ctrl-o			Other videos
+#   ctrl-s			Show comments
+#   ctrl-u			Uploader information
+#   ctrl-w			Watch video with mpv
+# 
+# fzf-channels:
+#   ctrl-o			Open channel
+#   ctrl-s			Suggested channels
+# 
+#   Run `man fzf' and get more informations.
+####################
+
+videos(){
+
+  #
+  # videos 'https://www.youtube.com/channel/{id}' [-a]
+  # -a: all
+  #
+
+  url="$1"/"${3:-videos}" # or streams or shorts
+  tmpfile="$(echo "$url" | tr '/' '_')""`date +%Y%m%d%H%M%S`"_"$RANDOM"_videos
+  channel="$(echo "$url" | sed -n '
+    \!^https://www.youtube.com/channel/\([^/]*\)/[^/]*$! {
+        s//\1/
+        p
+      }
+  ')"
+  if [ "$channel" = '' ]; then exit 2; fi
+
+  curl -s "$url"                                                       |
+  tee "$tmpfile"                                                       |
+  sed -n '
+    /.*\({"responseContext".*}\);<\/script>.*/ {
+        s//\1/
+        p
+        q
+      }
+  '                                                                    |
+  jq -c '
+    .contents.twoColumnBrowseResultsRenderer.tabs[]?
+    .tabRenderer.content                                               |
+    if (.sectionListRenderer)
+    then
+      .sectionListRenderer.contents[]?
+      .itemSectionRenderer.contents[]?
+      .gridRenderer.items[]?
+      .gridVideoRenderer
+    else
+      .richGridRenderer.contents[]?
+      .richItemRenderer.content                                        |
+      if (.videoRenderer)
+      then
+        .videoRenderer
+      else # shorts
+        .reelItemRenderer
+      end
+    end                                                                |
+    select(.videoId)                                                   |
+      {
+        ("https://www.youtube.com/watch?v=" + .videoId):
+        (
+          if (.title)
+          then
+            .title.accessibility.accessibilityData.label
+          else # shorts
+            .navigationEndpoint.reelWatchEndpoint.overlay.reelPlayerOverlayRenderer.reelPlayerHeaderSupportedRenderers.reelPlayerHeaderRenderer.accessibility.accessibilityData.label
+          end
+        )
+      }
+  '
+  token="$(
+    cat "$tmpfile"                                                     |
+    sed -n '
+      /.*\({"responseContext".*}\);<\/script>.*/ {
+          s//\1/
+          p
+          q
+        }
+      '                                                                |
+    jq -r '
+      .contents.twoColumnBrowseResultsRenderer.tabs[]?
+      .tabRenderer.content                                             |
+      if (.sectionListRenderer)
+      then
+        .sectionListRenderer.contents[]?
+        .itemSectionRenderer.contents[]?
+        .gridRenderer.items[-1].continuationItemRenderer.continuationEndpoint.continuationCommand.token
+      else
+        .richGridRenderer.contents[-1].continuationItemRenderer.continuationEndpoint.continuationCommand.token
+      end                                                              |
+      select(.)
+    '
+  )"
+
+  visitorData="$(
+    cat "$tmpfile"                                                     |
+    sed -n '
+      /.*\({"responseContext".*}\);<\/script>.*/ {
+          s//\1/
+          p
+          q
+        }
+      '                                                                |
+    jq -r '
+      .responseContext.webResponseContextExtensionData.ytConfigData.visitorData
+    '
+  )"
+
+  if ! [ "$2" = '-a' ]; then return; fi
+
+  callapi() {
+
+    #
+    # callapi 'toke'
+    #
+
+    if [ "$token" = '' ]; then return; fi
+    tmpfile="$(echo "$url" | tr '/' '_')""`date +%Y%m%d%H%M%S`"_"$RANDOM"_callapi
+
+    curl -s 'https://www.youtube.com/youtubei/v1/browse?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8' \
+      -H 'authority: www.youtube.com' \
+      -H 'x-youtube-client-name: 1' \
+      -H 'x-youtube-client-version: 2.20221104.02.00' \
+      -H 'x-goog-visitor-id: '"$visitorData" \
+      -H 'content-type: application/json' \
+      -H 'accept: */*' \
+      -H 'sec-gpc: 1' \
+      -H 'origin: https://www.youtube.com' \
+      -H 'sec-fetch-site: same-origin' \
+      -H 'sec-fetch-mode: same-origin' \
+      -H 'sec-fetch-dest: empty' \
+      -H 'referer: https://www.youtube.com/channel/'"$channel"'/videos' \
+      --data-raw '{"context":{"client":{'"$lang"'"visitorData":"","userAgent":"","clientName":"WEB","clientVersion":"2.20221104.02.00","originalUrl":"'"$url"'","platform":"DESKTOP","clientFormFactor":"UNKNOWN_FORM_FACTOR","userInterfaceTheme":"USER_INTERFACE_THEME_DARK","connectionType":"CONN_CELLULAR_4G","mainAppWebInfo":{"graftUrl":"'"$url"'","webDisplayMode":"WEB_DISPLAY_MODE_BROWSER"}},"user":{"lockedSafetyMode":false},"request":{"useSsl":true,"internalExperimentFlags":[],"consistencyTokenJars":[]},"clientScreenNonce":"","clickTracking":{"clickTrackingParams":""}},"continuation":"'"$1"'"}' \
+      --compressed                                                     |
+    tee "$tmpfile"                                                     |
+    jq -c '
+      .onResponseReceivedActions[]?
+      .appendContinuationItemsAction.continuationItems[]?              |
+      if (.gridVideoRenderer)
+      then
+        .gridVideoRenderer
+      else
+        .richItemRenderer.content                                      |
+        if (.videoRenderer)
+        then
+          .videoRenderer
+        else # shorts
+          .reelItemRenderer
+        end
+      end                                                              |
+      select(.videoId)                                                 |
+        {
+          ("https://www.youtube.com/watch?v=" + .videoId):
+          (
+            if (.title)
+            then
+              .title.accessibility.accessibilityData.label
+            else # shorts
+              .navigationEndpoint.reelWatchEndpoint.overlay.reelPlayerOverlayRenderer.reelPlayerHeaderSupportedRenderers.reelPlayerHeaderRenderer.accessibility.accessibilityData.label
+            end
+          )
+        }
+    '
+    token="$(
+      cat "$tmpfile"                                                   |
+      jq -r '
+        .onResponseReceivedActions[0]?                                 |
+        if (.appendContinuationItemsAction)
+        then
+          .appendContinuationItemsAction.continuationItems[-1]
+          .continuationItemRenderer.continuationEndpoint.continuationCommand.token
+        else
+          .reloadContinuationItemsCommand.continuationItems[0]
+          .feedFilterChipBarRenderer.contents[0]
+          .chipCloudChipRenderer.navigationEndpoint.continuationCommand.token
+        end
+      '
+    )"
+  }
+
+  if [ "$token" = '' ]; then return; fi
+  if [ "$token" = null ]; then return; fi
+  while sleep 1; do
+    pretoken="$token"
+    callapi "$token"
+    if [ "$token" = '' ]; then return; fi
+    if [ "$token" = null ]; then return; fi # maybe YouTube site-change
+    if [ "$pretoken" = "$token" ]; then return; fi # maybe a bug
+  done
+
+}
+
+channels(){
+
+  #
+  # channels 'https://www.youtube.com/channel/{id}'
+  #
+
+  url="$1"/channels
+  tmpfile="$(echo "$url" | tr '/' '_')""`date +%Y%m%d%H%M%S`"_"$RANDOM"_channels
+  channel="$(echo "$url" | sed -n '
+    \!^https://www.youtube.com/channel/\([^/]*\)/channels$! {
+        s//\1/
+        p
+      }
+  ')"
+  if [ "$channel" = '' ]; then exit 3; fi
+
+  curl -s "$url"                                                       |
+  tee "$tmpfile"                                                       |
+  sed -n '
+    /.*\({"responseContext".*}\);<\/script>.*/ {
+        s//\1/
+        p
+        q
+      }
+  '                                                                    |
+  jq -c '
+    .contents.twoColumnBrowseResultsRenderer.tabs[]?
+    .tabRenderer.content.sectionListRenderer.contents[]?
+    .itemSectionRenderer.contents[]?
+    .gridRenderer.items[]?
+    .gridChannelRenderer                                               |
+    select(.channelId)                                                 |
+      {
+        ("https://www.youtube.com/channel/" + .channelId):
+        .title.simpleText
+      }
+  '
+
+  token="$(
+    cat "$tmpfile"                                                     |
+    sed -n '
+      /.*\({"responseContext".*}\);<\/script>.*/ {
+          s//\1/
+          p
+          q
+        }
+    '                                                                  |
+    jq -r '
+      .contents.twoColumnBrowseResultsRenderer.tabs[]?
+      .tabRenderer.content.sectionListRenderer.contents[]?
+      .itemSectionRenderer.contents[]?
+      .gridRenderer.items[-1].continuationItemRenderer.continuationEndpoint.continuationCommand.token
+    '
+  )"
+
+  callapi () {
+
+    #
+    # callapi 'token'
+    #
+
+    tmpfile="`echo "$url" | tr '/' '_'`""`date +%Y%m%d%H%M%S`"_"$RANDOM"_callapi
+
+    curl -s 'https://www.youtube.com/youtubei/v1/browse?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8' \
+      -H 'authority: www.youtube.com' \
+      -H 'x-youtube-client-name: 1' \
+      -H 'x-youtube-client-version: 2.20221104.02.00' \
+      -H 'content-type: application/json' \
+      -H 'accept: */*' \
+      -H 'sec-gpc: 1' \
+      -H 'origin: https://www.youtube.com' \
+      -H 'sec-fetch-site: same-origin' \
+      -H 'sec-fetch-mode: same-origin' \
+      -H 'sec-fetch-dest: empty' \
+      -H 'referer: https://www.youtube.com/channel/'"$channel"'/channels' \
+      --data-raw '{"context":{"client":{"visitorData":"","userAgent":"","clientName":"WEB","clientVersion":"2.20221104.02.00","originalUrl":"https://www.youtube.com/channel/'"$channel"'/videos","clientFormFactor":"UNKNOWN_FORM_FACTOR","userInterfaceTheme":"USER_INTERFACE_THEME_DARK","connectionType":"CONN_CELLULAR_3G","mainAppWebInfo":{"graftUrl":"https://www.youtube.com/channel/'"$channel"'/channels","webDisplayMode":"WEB_DISPLAY_MODE_BROWSER"}},"user":{"lockedSafetyMode":false},"request":{"useSsl":true,"internalExperimentFlags":[],"consistencyTokenJars":[]},"clientScreenNonce":"","clickTracking":{"clickTrackingParams":""}},"continuation":"'"$token"'"}' \
+      --compressed                                                     |
+    tee "$tmpfile"                                                     |
+    jq -c '
+      .onResponseReceivedActions[]?
+      .appendContinuationItemsAction.continuationItems[]?
+      .gridChannelRenderer                                             |
+      select(.channelId)                                               |
+        {
+          ("https://www.youtube.com/channel/" + .channelId):
+          .title.simpleText
+        }
+    '
+
+    token="$(
+      cat "$tmpfile" |
+      jq -r '
+        .onResponseReceivedActions[]?
+        .appendContinuationItemsAction.continuationItems[-1].continuationItemRenderer.continuationEndpoint.continuationCommand.token
+      '
+    )"
+  }
+
+  if [ "$token" = '' ]; then return; fi
+  while sleep 1; do
+    callapi "$token"
+    if [ "$token" = '' ]; then return; fi
+  done
+}
+
+watch(){
+
+  #
+  # watch 'https://www.youtube.com/watch?v={id}'
+  #
+
+  url="$1"
+  tmpfile="$(echo "$url" | tr '/' '_')""`date +%Y%m%d%H%M%S`"_"$RANDOM"_watch
+  curl -s "$url" -o "$tmpfile"
+  cat "$tmpfile" |
+  sed -n '
+    /.*\({"responseContext".*}\);<\/script>.*/ {
+        s//\1/
+        h
+      }
+    $x; $p
+  '                                                                    |
+  jq -c '
+    (
+      .contents.twoColumnWatchNextResults.results.results.contents     |
+      (
+        .[0]                                                           |
+          {
+            title: .videoPrimaryInfoRenderer.title.runs[0].text,
+            viewCount: .videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText,
+            tooltip: .videoPrimaryInfoRenderer.sentimentBar.sentimentBarRenderer.tooltip,
+            data: .videoPrimaryInfoRenderer.dateText.simpleText,
+            status: .videoPrimaryInfoRenderer.badges[0].metadataBadgeRenderer.label
+          }
+      )
+    ,
+      (
+        .[1]                                                           |
+        {
+          channel: 
+            (
+              .videoSecondaryInfoRenderer.owner.videoOwnerRenderer     |
+              {
+                url: .title.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl | sub("^"; "https://www.youtube.com"),
+                text: .title.runs[0].text,
+                subscribe: .subscriberCountText.simpleText
+              }
+            )
+        }
+      ,
+        {
+          description: [.videoSecondaryInfoRenderer.description.runs[]?.text] | join("")
+        }
+      )
+    )
+  ,
+    (
+      .playerOverlays.playerOverlayRenderer.endScreen.watchNextEndScreenRenderer.results[]?
+      .endScreenVideoRenderer                                          |
+      select(.videoId)                                                 |
+        {
+          ("https://www.youtube.com/watch?v=" + .videoId):
+          .title.accessibility.accessibilityData.label
+        }
+    )
+  '
+  cat "$tmpfile"                                                       |
+  sed -n '
+    /.*\({"responseContext".*}\);<\/script>.*/ {
+        s//\1/
+        p
+        q
+      }
+  '                                                                    |
+  jq -c '
+    (
+      [
+        .adPlacements[]?
+        .adPlacementRenderer.renderer .actionCompanionAdRenderer.adVideoId
+      ]                                                                |
+      sort                                                             |
+      unique                                                           |
+      .[1:]                                                            |
+      map(sub("^"; "https://www.youtube.com/watch?v="))                |
+      .[]                                                              |
+      {(.): "Ads"}
+    )
+  '
+}
+
+comments(){
+
+  #
+  # comments 'https://www.youtube.com/watch?v={id}'
+  #
+
+  id="$(echo "$1" | sed 's!^https://www.youtube.com/watch?v=!!')"
+  tmpfile="$(echo "$id" | tr '/' '_')""`date +%Y%m%d%H%M%S`"_"$RANDOM"_comments
+
+  youtube-comment-downloader --youtubeid="$id" --output='/dev/stderr' 2>&1 1>/dev/null ||
+    echo 'You should install youtube-comment-downloader from https://github.com/egbertbouman/youtube-comment-downloader' >&2
+  # Depend on youtube-comment-downloader: https://github.com/egbertbouman/youtube-comment-downloader
+  # pip install https://github.com/egbertbouman/youtube-comment-downloader/archive/master.zip
+}
+
+fzf_videos(){
+
+  #
+  # fzf-videos 'header'
+  #
+
+  header="$1"
+
+  export FZF_DEFAULT_OPTS="
+    $FZF_DEFAULT_OPTS
+    --ansi
+    --no-sort
+    --bind 'ctrl-s:execute(sh \"$FZF_FULL_PATH\" --comments {} | less -f)'
+    --bind 'ctrl-o:execute(sh \"$FZF_FULL_PATH\" --watch {} | sed \"1,3d\" | sh \"$FZF_FULL_PATH\" --fzf-videos)'
+    --bind 'ctrl-u:execute(sh \"$FZF_FULL_PATH\" --watch {} | sed \"3!d; s/.*{//; s/}}//; s/[^,hp]*[^s]://g; s/,/, /g\" | sh \"$FZF_FULL_PATH\" --fzf-channels)'
+    --bind 'ctrl-y:execute-silent(echo -n \"{}\" | pbcopy)+abort'
+    --preview-window up:70%:hidden:wrap
+    --bind ctrl-w:'execute(mpv \"\$( echo {} | sed "\"'s/{\"//; s/\".*//'\"")\")'
+    --bind 'ctrl-t:toggle-preview'
+    --bind up:page-up
+    --bind down:page-down
+    --preview sh\ \"$FZF_FULL_PATH\"\ --watch\ \"{}\"
+    $YOUTUBE_FZF_VIDEOS
+"
+
+  fzf --header="$header"
+
+}
+
+fzf_channels(){
+  
+  # fzf-channels 'header'
+  #
+
+  header="$1"
+
+  export FZF_DEFAULT_OPTS="
+    $FZF_DEFAULT_OPTS
+    --ansi
+    --no-sort
+    --bind 'ctrl-o:execute(sh \"$FZF_FULL_PATH\" --videos -a {} | sh \"$FZF_FULL_PATH\" --fzf-videos {})'
+    --bind 'ctrl-s:execute(sh \"$FZF_FULL_PATH\" --channels {} | sed \"s/{//; s/}.*//\" | sh \"$FZF_FULL_PATH\" --fzf-channels {})'
+    --bind 'ctrl-y:execute-silent(echo -n \"{}\" | pbcopy)+abort'
+    --preview-window up:70%:hidden:wrap
+    --bind 'ctrl-t:toggle-preview'
+    --bind up:page-up
+    --bind down:page-down
+    --preview sh\ \"$FZF_FULL_PATH\"\ --videos\ \"{}\"
+    $YOUTUBE_FZF_CHANNELS
+  "
+
+  fzf --header="$header"
+
+}
+
+search(){
+
+  #
+  # search words
+  #
+
+  url='https://www.youtube.com/results?search_query='"$(echo "$@" | jq -sRr @uri)"
+  tmpfile="$(echo "$url" | tr '/' '_')""`date +%Y%m%d%H%M%S`"_"$RANDOM"_search
+
+  curl -s "$url"                                                       |
+  tee "$tmpfile"                                                       |
+  sed -n '
+    /.*\({"respon.*}\);.*/ {
+        s//\1/
+        p
+        q
+      }
+  '                                                                    |
+  jq -c '
+    .contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[]?
+    .itemSectionRenderer.contents[]?
+    .videoRenderer                                                     |
+    select(.videoId)                                                   |
+      {
+        ("https://www.youtube.com/watch?v=" + .videoId):
+        .title.accessibility.accessibilityData.label
+      }
+  '
+
+}
+
+main(){
+
+  if ! echo "$0" | grep -q '^/'; then
+    export FZF_FULL_PATH="`pwd`"/"$0"
+  else
+    export FZF_FULL_PATH="$0"
+  fi
+
+  database="${YOUTUBE_FZF_DATABASE:-/dev/stdin}"
+  if ! echo "$database" | grep -q '^/'; then
+    database="`pwd`"/"$database"
+  fi
+  tmp_id="youtube-fzf.XXXXX"
+  tmp_dir="${YOUTUBE_FZF_TMP:-$(mktemp -dt "${tmp_id}")}" || exit 1
+  mkdir -p "$tmp_dir" || exit 5
+  cd "$tmp_dir" || exit 4
+
+  if ! [ "$YOUTUBE_FZF_LANG" = '' ]; then
+    lang="\"hl\":\"$YOUTUBE_FZF_LANG\","
+  fi
+
+  option="$1"
+  shift
+  if [ "$1" = '-a' ]; then
+    videos_option='-a'
+    shift
+  fi
+  url="` echo "$@" | sed '
+    s/{//
+    s/^"//
+    s/,.*//
+    s/".*//
+  '`"
+  if echo "$url" | grep -q -e '^https://www.youtube.com/channel/' -e '^https://www.youtube.com/c/' -e '^https://www.youtube.com/user/' &&
+  ! echo "$url" | grep -q '^https://www.youtube.com/channel/[-[:alnum:]]\{24\}/\?$'; then
+    tmpfile="$(echo "$url" | tr '/' '_')""`date +%Y%m%d%H%M%S`_GetChannelId"
+    id="$(
+      curl -s "$url"                                                   |
+      tee "$tmpfile"                                                   |
+      sed -n '
+        /.*\({"respon.*}\);<\/script>.*/ {
+          s//\1/
+          p
+          q
+        }
+      '                                                                |
+      jq -r '.header.c4TabbedHeaderRenderer.channelId'
+    )"
+    sleep 1
+    if [ "$id" = '' ]; then exit 1; fi
+    url='https://www.youtube.com/channel/'"$id"
+  fi
+
+  case "$option" in
+    --videos)
+      if ! [ "$videos_option" = '-a' ]; then
+        echo "$@"
+      fi
+      videos "$url" "$videos_option"                                  ;;
+    --lives)
+      if ! [ "$videos_option" = '-a' ]; then
+        echo "$@"
+      fi
+      videos "$url" "$videos_option" streams                          ;;
+    --shorts)
+      if ! [ "$videos_option" = '-a' ]; then
+        echo "$@"
+      fi
+      videos "$url" "$videos_option" shorts                           ;;
+    --channels)
+      channels "$url"                                                 ;;
+    --watch)
+      echo "$@"
+      watch "$url"                                                    ;;
+    --comments)
+      comments "$url"                                                 ;;
+    --fzf-videos|-v)
+      fzf_videos "$@"                                                 ;;
+    --fzf-channels|-c)
+      fzf_channels "$@"                                               ;;
+    -s|--search)
+      search "$@" | fzf_videos "$@"                                   ;;
+    -q|--query)
+      search "$@"                                                     ;;
+    '')
+      cat "$database" | fzf_channels "$database"                      ;;
+    -V|--version)
+      sed -n '/^# Version: \(.*\)/{s//\1/p; q;}' "$FZF_FULL_PATH"
+                                                                      ;;
+    -h|--help)
+      sed -n '
+        /^####################/,/^####################/ {
+          /^# Version:/d; s/^#$/# /; s/^# //p
+        }
+      ' "$FZF_FULL_PATH"                                              ;;
+    *)
+      echo "Illega option: $option" >&2
+      exit 1                                                          ;;
+  esac
+}
+
+main "$@"
