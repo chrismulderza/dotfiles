@@ -47,3 +47,5 @@ tags
 # Persistent undo
 [._]*.un~
 
+# Ignore tmux plugins
+tmux/.tmux/

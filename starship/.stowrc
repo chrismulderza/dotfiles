@@ -1,0 +1,3 @@
+--dir=${HOME}/dotfiles/starship
+--target=${HOME}
+--ignore='.stowrc'
