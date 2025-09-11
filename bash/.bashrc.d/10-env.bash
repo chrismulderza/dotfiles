@@ -9,5 +9,13 @@ if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
-export PATH
 
+MANPATH=/usr/share/man
+
+# Test for optional paths (For now check /usr/local/bin where Homebrew installs)
+if [ -d /usr/local/bin ]; then
+  PATH=$PATH:/usr/local/bin:/usr/local/sbin
+  MANPATH=$MANPATH:/usr/local/share/man
+fi
+
+export PATH MANPATH
