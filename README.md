@@ -1,3 +1,3 @@
 # Introduction
 
-Personal dotfile repo
+An attempt at creating a more portable dotfiles setup.
