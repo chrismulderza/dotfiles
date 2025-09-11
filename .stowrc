@@ -1,0 +1,1 @@
+--dir=${HOME}/code/dotfiles --target=${HOME} --ignore=README.md
