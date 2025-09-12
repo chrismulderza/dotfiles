@@ -1,0 +1,5 @@
+[init]
+	defaultBranch = main
+[user]
+	name = Chris Mulder
+	email = cmulder@bitbuild.io

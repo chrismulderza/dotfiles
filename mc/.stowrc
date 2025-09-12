@@ -1,3 +1,0 @@
---dir=${HOME}/dotfiles/mc
---target=${HOME}
---ignore='.stowrc'
