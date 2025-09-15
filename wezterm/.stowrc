@@ -1,0 +1,5 @@
+--dir=${HOME}/code/dotfiles/wezterm
+--target=${HOME}/.config/wezterm
+--ignore=README.md
+--ignore=CHANGELOG.md
+--ignore=".stowrc"

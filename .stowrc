@@ -1,6 +1,0 @@
---dir=${HOME}/code/dotfiles 
---target=${HOME} 
---ignore=README.md 
---ignore=CHANGELOG.md 
---ignore=setup 
---ignore=".stowrc"

@@ -1,4 +1,4 @@
---dir=${HOME}/code/dotfiles/vim
+--dir=${HOME}/code/dotfiles/bash
 --target=${HOME}
 --ignore=README.md
 --ignore=CHANGELOG.md

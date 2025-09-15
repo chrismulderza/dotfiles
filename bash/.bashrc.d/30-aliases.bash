@@ -5,6 +5,7 @@
 # Aliases
 
 # some more ls aliases
+alias ls='ls -p --color=auto'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'

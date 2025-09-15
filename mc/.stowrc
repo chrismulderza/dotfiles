@@ -1,5 +1,5 @@
---dir=${HOME}/code/dotfiles/vim
---target=${HOME}
+--dir=${HOME}/code/dotfiles/mc
+--target=${HOME}/.config/mc
 --ignore=README.md
 --ignore=CHANGELOG.md
 --ignore=".stowrc"
