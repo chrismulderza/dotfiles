@@ -1,5 +1,0 @@
---dir=${HOME}/code/dotfiles/bash
---target=${HOME}
---ignore=README.md
---ignore=CHANGELOG.md
---ignore=".stowrc"

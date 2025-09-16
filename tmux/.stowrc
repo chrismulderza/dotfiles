@@ -1,6 +1,0 @@
---dir=${HOME}/code/dotfiles/tmux
---target=${HOME}/.config/tmux
---ignore=README.md
---ignore=CHANGELOG.md
---ignore=setup
---ignore=".stowrc"

@@ -1,5 +1,5 @@
 [init]
-	defaultBranch = main
+  defaultBranch = main
 [user]
-	name = Chris Mulder
-	email = cmulder@bitbuild.io
+  name = Chris Mulder
+  email = cmulder@bitbuild.io

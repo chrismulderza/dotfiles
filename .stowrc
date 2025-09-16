@@ -1,5 +1,5 @@
---dir=${HOME}/code/dotfiles/mc
---target=${HOME}/.config/mc
+--dir=${HOME}/.dotfiles
+--target=${HOME}
 --ignore=README.md
 --ignore=CHANGELOG.md
 --ignore=".stowrc"

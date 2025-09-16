@@ -1,5 +1,0 @@
---dir=${HOME}/code/dotfiles/nvim
---target=${HOME}/.config/nvim
---ignore=README.md
---ignore=CHANGELOG.md
---ignore=".stowrc"

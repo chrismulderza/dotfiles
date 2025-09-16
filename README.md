@@ -179,3 +179,7 @@ That's it. Live long and prosper.
 - [ ] Terminal
 - [ ] Figure out how to deploy Midnight Commander skins
 
+## Resources
+
+[Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)
+
