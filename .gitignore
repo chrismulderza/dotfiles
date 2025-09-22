@@ -48,4 +48,4 @@ tags
 [._]*.un~
 
 # Ignore tmux plugins
-tmux/.tmux/
+tmux/.config/tmux/plugins

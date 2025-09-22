@@ -593,7 +593,8 @@ if exists('&termguicolors')
   set notermguicolors
 endif
 set background=dark
-colorscheme desert
+"colorscheme desert
+colorscheme nord
 
 " Highlight trailing white spaces and leading tabs
 if has('gui_running')

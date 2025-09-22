@@ -118,7 +118,7 @@ Unix and Linux I still haven't found a good reason for it. I have a well
 practiced pinky on my left hand to hold down the shift key if I need to type
 more than 2 capital letters, and have not sustained any RSI yet.
 
-In the last few years I've become very attached to `tmux`,  to the point where
+In the last few years I've become very attached to `tmux`, to the point where
 it's an invaluable part of my daily workflow. Once I switched from `screen` as
 terminal multiplexer there was no going back. The default prefix key combo,
 `C-b` is masochistic however. I have become very accustomed to using the Caps
@@ -134,7 +134,7 @@ configure remapped keys consistently.
 
 In the bad (good?) old days of X.org you could use `setxkbmap` at the X session
 level and be done with it. If you live in the Gnome ecosystem you could set a
-Gnome session default using `dconf`.  Wayland... without Gnome? Well it's
+Gnome session default using `dconf`. Wayland... without Gnome? Well it's
 complicated, and even on page 4 of a Google search result, no one seems to be
 sure.
 
@@ -147,7 +147,7 @@ or X.org, or have a desktop environment like Gnome or KDE.
 See the `hwdb(7)` manual page for more details. In short the steps are:
 
 - Check the keycode for Caps Lock on you keyboard with `sudo showkey
-  --scancodes`. Make sure you get the code for the "key down" event, and not
+--scancodes`. Make sure you get the code for the "key down" event, and not
   the key code produced when the key is released. On most AT keyboards this
   will be `0x3a`.
 
@@ -173,13 +173,8 @@ That's it. Live long and prosper.
 
 ## Todo List
 
-- [X] Generic method to remap Caps Lock to Ctl in Linux
-- [/] Configure tmux
-- [ ] Vim 16 color theme
-- [ ] Terminal
-- [ ] Figure out how to deploy Midnight Commander skins
+see [TODO.md](TODO.md)
 
 ## Resources
 
 [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)
-
