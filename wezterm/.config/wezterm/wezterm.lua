@@ -79,7 +79,8 @@ local colorscheme = {
 
 -- set the configuration options
 
-config.font = wezterm.font("Hack Nerd Font Mono", { weight = "Medium" })
+-- config.font = wezterm.font("Hack Nerd Font Mono", { weight = "Medium" })
+config.font = wezterm.font("JetBrains Mono", { weight = "Medium" })
 config.font_size = 14
 
 config.enable_tab_bar = false
