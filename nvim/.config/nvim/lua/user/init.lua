@@ -1,6 +1,6 @@
 -- user/init.lua
--- 
--- set some basics
+--
+-- some basics
 vim.g.mapleader = " "
 
 -- initalise core settings first
@@ -10,7 +10,7 @@ vim.g.mapleader = " "
 require("user.lazy")
 -- options
 require("user.options")
---- configure lsps 
+--- configure lsps
 require("user.lsp")
 -- appearance, all the pretty colours
 require("user.appearance")

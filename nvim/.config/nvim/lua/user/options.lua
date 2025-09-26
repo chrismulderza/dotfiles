@@ -7,7 +7,8 @@
 -- encoding
 vim.o.encoding="utf-8"
 -- the encoding written to a file
-vim.o.fileencoding = "utf-8"
+-- this seems to break nvim sometimes
+-- vim.o.fileencoding = "utf-8"
 -- do we even need to do this
 vim.cmd("filetype plugin indent on")
 vim.cmd("syntax enable")

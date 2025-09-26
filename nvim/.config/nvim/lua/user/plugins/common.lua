@@ -2,8 +2,10 @@
 --
 -- common plugins that don't require any additional setup
 --
-local M = {
+return {
   { "nvim-lua/plenary.nvim" },
+  { "tpope/vim-surround",
+    dependencies = { "tpope/vim-repeat" }
+  },
 }
 
-return M

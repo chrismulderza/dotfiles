@@ -171,9 +171,18 @@ sudo udevadm trigger --verbose --sysname-match='event*'
 
 That's it. Live long and prosper.
 
+## Module Specific
+
+- [NeoVim](/nvim/README.md)
+
 ## Todo List
 
 see [TODO.md](TODO.md)
+
+## Changelog
+
+see [CHANGELOG.md](/CHANGELOG.md)
+
 
 ## Resources
 
