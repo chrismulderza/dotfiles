@@ -28,18 +28,18 @@ is actually contained there.
 configurations:
 
 - `lazy.lua` - instatiates the Lazy plugin manager, and provides it's
-configuration. Plugins are loaded by walking through the `lua/user/plugins`
-directory. Except for the common plugins, each plugin is specified in it's own
-file, and configured seperately to maintain some (my) sanity.
+  configuration. Plugins are loaded by walking through the `lua/user/plugins`
+  directory. Except for the common plugins, each plugin is specified in it's own
+  file, and configured seperately to maintain some (my) sanity.
 
 - `options.lua` - contains all the custom vim/nvim configuration options.
 
 - `lsp.lua` - groups all of my LSP configuration together in one place. _This
-probably still needs some work to see if we can remove the need to define
-configuration for the LSP in `nvim/lsp/<lsp_name>` directory._
+  probably still needs some work to see if we can remove the need to define
+  configuration for the LSP in `nvim/lsp/<lsp_name>` directory._
 
 - `appearance.lua` - groups all appearance (colour) configuration together in
-one place.
+  one place.
 
 - `functions.lua` - where all my custom functions are defined.
 
@@ -78,49 +78,58 @@ linked into `~/.local/bin`.
 
 ### General Editing and Navigation
 
-* `C-/` - Comment line / visual block
-* `[b` and `]b` or `[B` and `]B` | Normal mode, navigate through the buffer list
-* `[a` and `]a` or `[A` and `]A` | Normal mode, navigate through the argument list
-* `[<Space>` and `]<Space>` | Normal mode, add an empty line above/below the cursor
+- `C-/` - Comment line / visual block
+- `[b` and `]b` or `[B` and `]B` | Normal mode, navigate through the buffer list
+- `[a` and `]a` or `[A` and `]A` | Normal mode, navigate through the argument list
+- `[<Space>` and `]<Space>` | Normal mode, add an empty line above/below the cursor
 
 ### LSP/Code Actions and Diagnostics
 
-* `grn` | Normal mode, renames the item/variable and updates all references to
+- `grn` | Normal mode, renames the item/variable and updates all references to
   it.
-* `grr` | Normal mode, opens a list of all references to the value.
-* `gri` | Normal mode, opens the implementation of the item.
-* `gra` | Normal/Visual mode, perform a code action.
-* `CTRL-S` | Insert/Select mode, opens signature help.
-* `[d` and `]d` | move between diagnostics in the current buffer.
-* `[D` and `]D` | jumps to first/last diagnostic.
-* `[q` and `]q` or `[Q` and `]Q` | navigate through the quickfix list
-* `[l` and `]l` or `[L` and `]L` | navigate through the location list
-* `[t` and `]t` or `[T` and `]T` | navigate through the tag matchlist
-* `<leader>dt` | Normal mode, toggle diagnostic messages
-* `K` | Visual mode, move selected line up
-* `J` | Visual mode, move selected line down
-* `<leader>fr` | Normal mode, find the word under the cursos and replace with
-input
-
+- `grr` | Normal mode, opens a list of all references to the value.
+- `gri` | Normal mode, opens the implementation of the item.
+- `gra` | Normal/Visual mode, perform a code action.
+- `CTRL-S` | Insert/Select mode, opens signature help.
+- `[d` and `]d` | move between diagnostics in the current buffer.
+- `[D` and `]D` | jumps to first/last diagnostic.
+- `[q` and `]q` or `[Q` and `]Q` | navigate through the quickfix list
+- `[l` and `]l` or `[L` and `]L` | navigate through the location list
+- `[t` and `]t` or `[T` and `]T` | navigate through the tag matchlist
+- `<leader>dt` | Normal mode, toggle diagnostic messages
+- `K` | Visual mode, move selected line up
+- `J` | Visual mode, move selected line down
+- `<leader>fr` | Normal mode, find the word under the cursos and replace with
+  input
 
 ### Plugins
 
 #### tpope/vim-surround
 
-* `cs"'` | Normal mode, Surround `"Hello world!"` -> `'Hello world!'`
-* `cs'<q>` | Normal mode, Surround `'Hello world!'` -> `<q>Hello world!</q>`
-* `cst"` |  Normal mode, Remove tags from `<q>Hello world!</q>`
--> `"Hello world!"`
-* `ds"` | Normal mode, Remove `"` delimiters entirely -> `Hello world!`
-* `ysiw]` | Normal mode, Surround word with `[]` -> `[Hello] world!`
-(iw is a text object)
-* `cs]{` | Normal mode, Surround word with brace -> `{ Hello } world!` (use `}`
-for spaced surround.
-* `yssb` or `yss)` | Normal mode, Surround the entire line with parentheses
--> `({ Hello } world!)
-* `ds{` | Normal mode, Remove `{}` brace surround.
-* `ds)` | Normal mode, Remove `()` parentheses surround.
-* `ysiw<tag>` | Normal mode, Surround word with `<tag>`
-* `S<tag>` | (V)isual mode, place selections between `<tag>`
+- `cs"'` | Normal mode, Surround `"Hello world!"` -> `'Hello world!'`
+- `cs'<q>` | Normal mode, Surround `'Hello world!'` -> `<q>Hello world!</q>`
+- `cst"` | Normal mode, Remove tags from `<q>Hello world!</q>`
+  -> `"Hello world!"`
+- `ds"` | Normal mode, Remove `"` delimiters entirely -> `Hello world!`
+- `ysiw]` | Normal mode, Surround word with `[]` -> `[Hello] world!`
+  (iw is a text object)
+- `cs]{` | Normal mode, Surround word with brace -> `{ Hello } world!` (use `}`
+  for spaced surround.
+- `yssb` or `yss)` | Normal mode, Surround the entire line with parentheses
+  -> `({ Hello } world!)
+- `ds{` | Normal mode, Remove `{}` brace surround.
+- `ds)` | Normal mode, Remove `()` parentheses surround.
+- `ysiw<tag>` | Normal mode, Surround word with `<tag>`
+- `S<tag>` | (V)isual mode, place selections between `<tag>`
 
 ## TODO
+
+### Plugins
+
+- whichkey
+- gitsigns
+- comment
+- vim-tmux-navigator
+- nvim-autopairs??
+- markdown ftplugin
+- completion
