@@ -49,3 +49,6 @@ tags
 
 # Ignore tmux plugins
 tmux/.config/tmux/plugins
+
+# ignore lazyvim lock file
+lazy-lock.json

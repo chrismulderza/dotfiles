@@ -1,4 +1,4 @@
---- autocmd.lua
+--- autocmds.lua
 --
 
 -- remove trailing white spaces
