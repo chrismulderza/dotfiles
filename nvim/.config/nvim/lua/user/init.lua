@@ -1,10 +1,9 @@
 -- user/init.lua
 --
--- some basics
+-- early init options
 vim.g.mapleader = " "
-
--- initalise core settings first
---
+-- set termguicolors to enable highlight groups. still needed?
+vim.opt.termguicolors = true
 -- load lazy plugin manager, initialise plugins first before creating user
 -- specific configurations
 require("user.lazy")
@@ -20,7 +19,3 @@ require("user.functions")
 require("user.autocmds")
 -- user keymaps
 require("user.keymaps")
-
-
-
-
