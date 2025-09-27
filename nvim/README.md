@@ -126,10 +126,9 @@ linked into `~/.local/bin`.
 
 ### Plugins
 
-- whichkey
-- gitsigns
 - comment
 - vim-tmux-navigator
 - nvim-autopairs??
 - markdown ftplugin
 - completion
+- nvim-colorizer - configure only for specific file types
