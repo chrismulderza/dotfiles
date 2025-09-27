@@ -31,8 +31,6 @@ vim.o.updatetime = 300
 vim.o.swapfile = false
 -- separate Vim plugins from Neovim in case Vim still in use
 vim.opt.runtimepath:remove("/usr/share/vim/vimfiles")
--- set termguicolors to enable highlight groups. still needed?
-vim.opt.termguicolors = true
 -- Don't give |ins-completion-menu| messages (default: does not include 'c')
 vim.opt.shortmess:append("c")
 -- allow virtualedit in block edit
