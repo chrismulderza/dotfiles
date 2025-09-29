@@ -15,7 +15,8 @@ return {
   -- Powerful Git integration for Vim
   { "tpope/vim-fugitive", },
   -- Autoclose parentheses, brackets, quotes, etc.
-  -- TODO: re-evaluate this
+  -- TODO: re-evaluate this and see if we need to tweak the config as per the
+  -- docs (https://github.com/windwp/nvim-autopairs)
   { "windwp/nvim-autopairs",
     event = "InsertEnter",
     config = true,

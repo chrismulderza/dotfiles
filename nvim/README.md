@@ -82,6 +82,7 @@ linked into `~/.local/bin`.
 - `[b` and `]b` or `[B` and `]B` | Normal mode, navigate through the buffer list
 - `[a` and `]a` or `[A` and `]A` | Normal mode, navigate through the argument list
 - `[<Space>` and `]<Space>` | Normal mode, add an empty line above/below the cursor
+- `gcc` | Normal/Visual mode, Comment the current line.
 
 ### LSP/Code Actions and Diagnostics
 
@@ -126,9 +127,7 @@ linked into `~/.local/bin`.
 
 ### Plugins
 
-- comment
-- vim-tmux-navigator
-- nvim-autopairs??
+- Fix selection list
 - markdown ftplugin
 - completion
 - nvim-colorizer - configure only for specific file types

@@ -134,7 +134,7 @@ vim.o.inccommand = "nosplit"
 vim.o.matchpairs = "(:),{:},[:],<:>"
 -- how to complete wildcards
 vim.o.wildmode = "list:full"
-vim.o.wildmenu = true
+vim.o.wildmenu = false
 -- ignore certain files in globbing
 vim.opt.wildignore:append {"*.o,*.obj,*.bin,*.dll,*.exe"}
 vim.opt.wildignore:append {"*/.git/*,*/.svn/*,*/__pycache__/*,*/build/**"}
